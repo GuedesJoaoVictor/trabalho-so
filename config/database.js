@@ -1,7 +1,22 @@
 const mongoose = require('mongoose');
 
-mongoose.Promise = global.Promise;
+mongoose.connection.on('connected', () => {
+  console.log('Mongoose connected to ' + dbURI);
+});
 
-mongoose.connect("mongodb://mongodb:27017/todo-list", { useNewUrlParser: true, useUnifiedTopology: true})
-    .then(() => console.log("Conectado ao MongoDB"))
-    .catch((err) => console.log(err));
+mongoose.connection.on('error', (err) => {
+  console.log('Mongoose connection error: ' + err);
+});
+
+mongoose.connection.on('disconnected', () => {
+  console.log('Mongoose disconnected');
+});
+
+const dbURI = 'mongodb://mongodb:27017/todo-list';
+
+mongoose.connect(dbURI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => console.log('MongoDB connected...'))
+.catch(err => console.log(err));
